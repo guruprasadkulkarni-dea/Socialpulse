@@ -1,7 +1,6 @@
 # Databricks notebook source
 from pyspark import pipelines as dp
 from pyspark.sql import functions as fn
-from pyspark.sql.types import StructType
 
 # COMMAND ----------
 
@@ -40,44 +39,46 @@ def get_select_expr(entity,quality):
 
 # COMMAND ----------
 
-warn_rules = get_rules("events", "warn")
-drop_rules = get_rules("events", "drop")
+warn_rules = get_rules("ads", "warn")
+drop_rules = get_rules("ads", "drop")
 
 # COMMAND ----------
 
-select_expr = get_select_expr("events", "silver")
-print('select_expr------> ',select_expr)
-
-# COMMAND ----------
-
-catalog_name = spark.conf.get("catalog_name", "socialpulse_catalog")
-
-# COMMAND ----------
-
-df = spark.read.table(f'{catalog_name}.config.project_properties')
-
-raw_schema_str = df.filter((fn.col('field_key') == 'schema') & (fn.col('entity') == 'events') & (fn.col('env') == 'dev')  & (fn.col('quality') == 'silver')) .select('field_value').collect()[0]['field_value']
-
-event_schema = StructType.fromDDL(raw_schema_str)
+select_expr = get_select_expr("ads", "silver")
 
 # COMMAND ----------
 
 @dp.table(
-    name    = f"{catalog_name}.silver.clean_events",
-    comment = "table for Clean silver table records",
-    schema  = event_schema,
-    table_properties = {'quality': 'silver',
+    name = "socialpulse_catalog.silver.clean_ads_staged",
+    comment="table for Clean silver table records",
+        table_properties = {'quality': 'silver',
                         'delta.feature.timestampNtz': 'supported',
                         'pipelines.reset.allowed': 'true',
-                        'delta.enableDeletionVectors' : 'true' }
+                        'delta.enableDeletionVectors' : 'true'}
 )
 @dp.expect_all(warn_rules)              
 @dp.expect_all_or_drop(drop_rules)      
-def clean_events():
+def clean_ads_staged():
     return (
         spark.readStream \
         .option("skipChangeCommits", "true") \
-        .table(f"{catalog_name}.bronze.raw_events") \
+        .table("socialpulse_catalog.bronze.raw_ads") \
         .filter(fn.col("_rescued_data").isNull()) \
         .select(*select_expr)
     )
+
+# COMMAND ----------
+
+dp.create_streaming_table(
+    name = "socialpulse_catalog.silver.clean_ads",
+    comment="table for Clean silver table records",
+    table_properties = {"quality": "silver",
+                        "delta.feature.timestampNtz": "supported"})
+
+dp.create_auto_cdc_flow(
+    target             = "socialpulse_catalog.silver.clean_ads",
+    source             = "socialpulse_catalog.silver.clean_ads_staged",  # ← staged!
+    keys               = ["ad_id"],
+    sequence_by        = "updated_at",
+    stored_as_scd_type = 2
+)

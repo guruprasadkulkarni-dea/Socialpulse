@@ -3,26 +3,34 @@ bundle:
 
 variables:
   catalog_name:
-    default: main
+    default: socialpulse_catalog_dev
+  is_development:
+    default: "true"
 
 resources:
             
   pipelines:
     streaming_pipeline:
-      name: streaming
-      catalog: socialpulse_catalog
+      name: ${bundle.target}_streaming_dlt
+      serverless: true
+      catalog: ${var.catalog_name}
       schema: bronze
+      configuration:
+        catalog_name : "${var.catalog_name}"
       libraries:
         - notebook:
             path: ./src/02_bronze/02a_bronze_events.py
         - notebook:
             path: ./src/03_silver/03a_silver_events.py
-      development: true
+      development: ${var.is_development}
     
     batch_pipeline:
-      name: batch
-      catalog: socialpulse_catalog
+      name: ${bundle.target}_batch_dlt
+      serverless: true
+      catalog: ${var.catalog_name}
       schema: bronze
+      configuration:
+        catalog_name : "${var.catalog_name}"
       libraries:
         - notebook:
             path: ./src/02_bronze/02b_bronze_users.py
@@ -32,15 +40,49 @@ resources:
             path: ./src/03_silver/03b_silver_users.py
         - notebook:
             path: ./src/03_silver/03c_silver_ads.py
-      development: true
+      development: ${var.is_development}
+    
+  jobs:
+    gold_orchestration:
+      name: ${bundle.target}_gold_orchestration
+      tasks:
+        - task_key: user_session_summary
+          notebook_task:
+            notebook_path: ./src/04_gold/01_user_session_summary.py
+          depends_on: []
+          
+        - task_key: content_engagement
+          notebook_task:
+            notebook_path: ./src/04_gold/02_content_engagement.py
+          depends_on: []
+          
+        - task_key: ad_performance
+          notebook_task:
+            notebook_path: ./src/04_gold/03_ad_performance.py
+          depends_on: []
+          
+        - task_key: hourly_active_users
+          notebook_task:
+            notebook_path: ./src/04_gold/04_hourly_active_users.py
+          depends_on: []
+          
+        - task_key: anomaly_flags
+          notebook_task:
+            notebook_path: ./src/04_gold/05_anomaly_flags.py
+          depends_on:
+            - task_key: user_session_summary
+            - task_key: content_engagement
+            
 targets:
   dev:
     default: true
     workspace:
       host: https://adb-7405619834166867.7.azuredatabricks.net
+    
   
   prod:
     workspace:
       host: https://adb-7405615870896216.16.azuredatabricks.net
     variables:
-      catalog_name : socialpuse_catalog
+      catalog_name : socialpulse_catalog_prod
+      is_development : "false"

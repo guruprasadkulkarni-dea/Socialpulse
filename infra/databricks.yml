@@ -1,0 +1,26 @@
+bundle:
+  name: socialpulse-infra
+
+
+resources:
+  jobs:
+    environment_setup_job:
+      name: prod-environment-setup
+      tasks:
+        - task_key: run_setup_sql
+          notebook_task:
+            notebook_path: ./src/00_setup/setup_project_environment.sql
+          new_cluster:
+            spark_version: 15.4.x-scala2.12
+            node_type_id: Standard_D4ds_v5
+            num_workers: 1
+            
+targets:
+  dev:
+    default: true
+    workspace:
+      host: https://adb-7405619834166867.7.azuredatabricks.net
+  
+  prod:
+    workspace:
+      host: https://adb-7405615870896216.16.azuredatabricks.net

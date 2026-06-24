@@ -1,0 +1,46 @@
+bundle:
+  name: socialpulse-dlt-pl
+
+variables:
+  catalog_name:
+    default: main
+
+resources:
+            
+  pipelines:
+    streaming_pipeline:
+      name: streaming
+      catalog: socialpulse_catalog
+      schema: bronze
+      libraries:
+        - notebook:
+            path: ./src/02_bronze/02a_bronze_events.py
+        - notebook:
+            path: ./src/03_silver/03a_silver_events.py
+      development: true
+    
+    batch_pipeline:
+      name: batch
+      catalog: socialpulse_catalog
+      schema: bronze
+      libraries:
+        - notebook:
+            path: ./src/02_bronze/02b_bronze_users.py
+        - notebook:
+            path: ./src/02_bronze/02c_bronze_ads.py
+        - notebook:
+            path: ./src/03_silver/03b_silver_users.py
+        - notebook:
+            path: ./src/03_silver/03c_silver_ads.py
+      development: true
+targets:
+  dev:
+    default: true
+    workspace:
+      host: https://adb-7405619834166867.7.azuredatabricks.net
+  
+  prod:
+    workspace:
+      host: https://adb-7405615870896216.16.azuredatabricks.net
+    variables:
+      catalog_name : socialpuse_catalog

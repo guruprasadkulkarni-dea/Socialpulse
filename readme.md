@@ -420,8 +420,6 @@ databricks bundle deploy --target prod
 | Catalog | socialpulse_catalog | socialpulse_prod_catalog |
 | Cluster size | Small (single node) | Large (multi node) |
 | Pipeline mode | Triggered | Continuous (events) |
-| Storage account | deasocialpulsedl | socialpulseprod |
-
 ---
 
 ## Exam Coverage

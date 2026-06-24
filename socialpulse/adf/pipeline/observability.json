@@ -1,0 +1,181 @@
+{
+	"name": "observability",
+	"properties": {
+		"activities": [
+			{
+				"name": "Execute Pipeline Health",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/guruprasad.kulkarni12@gmail.com/Claude/05_observability/01_pipeline_health",
+					"baseParameters": {
+						"p_refersh_type": {
+							"value": "@pipeline().parameters.p_refersh_type",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_databricks_compute",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"p_workspace_url": {
+							"value": "@pipeline().parameters.p_workspace_url",
+							"type": "Expression"
+						},
+						"p_workspace_id": {
+							"value": "@pipeline().parameters.p_workspace_id",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Execute Data Quality",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Execute Pipeline Health",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/guruprasad.kulkarni12@gmail.com/Claude/05_observability/02_data_quality",
+					"baseParameters": {
+						"p_refersh_type": {
+							"value": "@pipeline().parameters.p_refersh_type",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_databricks_compute",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"p_workspace_url": {
+							"value": "@pipeline().parameters.p_workspace_url",
+							"type": "Expression"
+						},
+						"p_workspace_id": {
+							"value": "@pipeline().parameters.p_workspace_id",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Execute Pipeline Cost",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/guruprasad.kulkarni12@gmail.com/Claude/05_observability/03_pipeline_cost",
+					"baseParameters": {
+						"p_refersh_type": {
+							"value": "@pipeline().parameters.p_refersh_type",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_databricks_compute",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"p_workspace_url": {
+							"value": "@pipeline().parameters.p_workspace_url",
+							"type": "Expression"
+						},
+						"p_workspace_id": {
+							"value": "@pipeline().parameters.p_workspace_id",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Execute Table Growth",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Execute Pipeline Cost",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/guruprasad.kulkarni12@gmail.com/Claude/05_observability/04_table_growth",
+					"baseParameters": {
+						"p_refersh_type": {
+							"value": "@pipeline().parameters.p_refersh_type",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_databricks_compute",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"p_workspace_url": {
+							"value": "@pipeline().parameters.p_workspace_url",
+							"type": "Expression"
+						},
+						"p_workspace_id": {
+							"value": "@pipeline().parameters.p_workspace_id",
+							"type": "Expression"
+						}
+					}
+				}
+			}
+		],
+		"parameters": {
+			"p_refersh_type": {
+				"type": "string",
+				"defaultValue": "full"
+			},
+			"p_workspace_id": {
+				"type": "string"
+			},
+			"p_workspace_url": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "observability"
+		},
+		"annotations": []
+	}
+}

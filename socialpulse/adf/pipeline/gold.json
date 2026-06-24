@@ -1,0 +1,203 @@
+{
+	"name": "gold",
+	"properties": {
+		"activities": [
+			{
+				"name": "Execute User Session",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/guruprasad.kulkarni12@gmail.com/Claude/04_gold/01_user_session_summary",
+					"baseParameters": {
+						"p_refersh_type": {
+							"value": "@pipeline().parameters.p_refersh_type",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_databricks_compute",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"p_workspace_url": {
+							"value": "@pipeline().parameters.p_workspace_url",
+							"type": "Expression"
+						},
+						"p_workspace_id": {
+							"value": "@pipeline().parameters.p_workspace_id",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Execute Content Management",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/guruprasad.kulkarni12@gmail.com/Claude/04_gold/02_content_engagement",
+					"baseParameters": {
+						"p_refersh_type": {
+							"value": "@pipeline().parameters.p_refersh_type",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_databricks_compute",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"p_workspace_url": {
+							"value": "@pipeline().parameters.p_workspace_url",
+							"type": "Expression"
+						},
+						"p_workspace_id": {
+							"value": "@pipeline().parameters.p_workspace_id",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Execute Ad Performance",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/guruprasad.kulkarni12@gmail.com/Claude/04_gold/03_ad_performance",
+					"baseParameters": {
+						"p_refersh_type": {
+							"value": "@pipeline().parameters.p_refersh_type",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_databricks_compute",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"p_workspace_url": {
+							"value": "@pipeline().parameters.p_workspace_url",
+							"type": "Expression"
+						},
+						"p_workspace_id": {
+							"value": "@pipeline().parameters.p_workspace_id",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Execute Hourly Active Users",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/guruprasad.kulkarni12@gmail.com/Claude/04_gold/04_hourly_active_users",
+					"baseParameters": {
+						"p_refersh_type": {
+							"value": "@pipeline().parameters.p_refersh_type",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_databricks_compute",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"p_workspace_url": {
+							"value": "@pipeline().parameters.p_workspace_url",
+							"type": "Expression"
+						},
+						"p_workspace_id": {
+							"value": "@pipeline().parameters.p_workspace_id",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Execute Anomoly Flags",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/guruprasad.kulkarni12@gmail.com/Claude/04_gold/05_anomaly_flags",
+					"baseParameters": {
+						"p_refersh_type": {
+							"value": "@pipeline().parameters.p_refersh_type",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_databricks_compute",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"p_workspace_url": {
+							"value": "@pipeline().parameters.p_workspace_url",
+							"type": "Expression"
+						},
+						"p_workspace_id": {
+							"value": "@pipeline().parameters.p_workspace_id",
+							"type": "Expression"
+						}
+					}
+				}
+			}
+		],
+		"parameters": {
+			"p_refersh_type": {
+				"type": "string",
+				"defaultValue": "full"
+			},
+			"p_workspace_url": {
+				"type": "string"
+			},
+			"p_workspace_id": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "gold"
+		},
+		"annotations": []
+	}
+}
